@@ -1,0 +1,94 @@
+{% extends 'layouts/Layout_Menu.html' %}
+
+{% block body %}
+
+    <div class="d-flex" id="content-wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-container" class="bg-primary">
+            <div class="logo">
+                <h4 class="text-light font-weight-bold mb-0"><a href="/inicio" class="d-block text-light p-3 border-0">Face Mask Advisor</a></h4>
+            </div>
+            <div class="menu">
+              <p class="d-block text-light p-3 border-0"><i class="icon ion-md-finger-print lead mr-2"></i>
+                {{g.user.nombre}} {{g.user.apellido_pat}}</p>
+                <a href="/test" class="d-block text-light p-3 border-0"><i class="icon ion-md-pulse lead mr-2"></i>
+                    Realizar prueba</a>
+                <a href="/charts" class="d-block text-light p-3 border-0"><i class="icon ion-md-stats lead mr-2"></i>
+                    Estadísticas</a>
+                <a href="/user_account" class="d-block text-light p-3 border-0"><i class="icon ion-md-person lead mr-2"></i>
+                    Datos de la cuenta</a>
+                <a href="/advices" class="d-block text-light p-3 border-0"> <i class="icon ion-md-paper lead mr-2"></i>
+                    Avisos recientes</a>
+                    <a href="/help" class="d-block text-light p-3 border-0"><i class="icon ion-md-information-circle lead mr-2"></i>
+                      Ayuda</a>
+                      <a href="/logout" class="d-block text-light p-3 border-0"><i class="icon ion-md-exit lead mr-2"></i>
+                        Cerrar sesión</a>
+            </div>
+        </div>
+        <!-- Fin sidebar -->
+
+        <div class="w-100">
+
+        <!-- Page Content -->
+        <div id="content" class="bg-light w-100">
+
+              <section class="bg-light py-3">
+                  <div class="container" style="text-align: center;">
+                    <div>
+                        <h1 class="font-weight-bold mb-0">Detección de cubrebocas</h1>
+                        <div style="margin-top: 2%;">
+                            <video autoplay id="camera" hidden></video>
+                            <canvas id="video_canvas" width="480" height="480" style="border-radius: 15px;"></canvas>
+                            <p>
+                                <h3 id="message"></h3>
+                                <h4 id="prob"></h4>
+                            </p>
+                        </div> 
+                  </div>
+              </section>
+        </div>
+    </div>
+    <script>
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('video_canvas');
+        const message = document.getElementById('message')
+        const prob = document.getElementById('prob')
+        const ctx = canvas.getContext('2d');
+
+        // const supported = 'mediaDevices' in navigator;
+        // alert(`Camera is supported? ${supported}`)
+        console.log(video)
+        console.log(video.videoWidth)
+        console.log(video.videoHeight)
+
+        const vgaConstraints = {
+            video: true,
+        };
+        navigator.mediaDevices.getUserMedia(vgaConstraints).then((stream) => {
+            video.srcObject = stream;
+        });
+
+        let videoLoop = () => {
+            ctx.save();
+            ctx.drawImage(video, -(video.videoWidth - 480)/2, -(video.videoHeight - 480)/2, video.videoWidth, video.videoHeight);
+            ctx.restore();
+
+            requestAnimationFrame(videoLoop);
+        }
+        videoLoop();
+
+        setInterval(() => {
+            let request = new XMLHttpRequest()
+            request.open('POST', 'http://127.0.0.1:5000/clasificar')
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+            request.send(JSON.stringify({'photo': canvas.toDataURL()}))
+            request.onreadystatechange = function() {
+                let data = JSON.parse(request.response)
+                message.innerText = data.message
+                prob.innerText = (data.prob) * 100 + '%'
+            }
+        }, 1500)
+    </script>         
+
+{% endblock %}

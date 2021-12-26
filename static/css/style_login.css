@@ -1,0 +1,30 @@
+.bg{
+    background-image: url(/static/img/FaceMask_FlatBG.jpg);
+    background-position: center center;
+    background-size: cover;
+    position: fixed; 
+    height: 100%; 
+    width: 60%;
+}
+
+.data-div{
+    background: #00796B; 
+    width: 40vw; 
+    min-height: 100vh;
+    float: right;
+}
+
+@media only screen and (max-width: 1000px) {
+    /* For desktop: */
+    .data-div {width: 100vw; min-height: 100vh;}
+}
+
+.alert {
+    width:80%;    
+    margin-left: 10%; 
+}
+  
+.header, .footer { overflow: hidden; position: fixed; }
+
+.page-content { overflow: auto; }
+

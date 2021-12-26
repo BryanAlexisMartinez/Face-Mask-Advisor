@@ -1,0 +1,64 @@
+{% extends 'layouts/Layout_Index.html' %}
+
+{% block body %}
+
+    <div class="bg"></div>
+
+    <div class="col p-5 rounded-end data-div" >
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div id="alert_inicio" class="span4 offset4 alert {{category}} alert-dismissible fade show" style="position: relative;" role="alert">
+                        <strong>{{message}}</strong> 
+                        <button type="button" class="close" onclick="delete_flash(this)" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}  
+
+        <h2 class="fw-bold text-center " style="color: white;">Face Mask Advisor</h2>
+        <p class="text-justify" style="color: white;">
+            Con Face mask Advisor puedes controlar el acceso únicamente a personal que utilice correctamente el cubrebocas y así evitar contagios.
+            Recuerda: Te cuidas tu, nos cuidamos todos.
+        </p>
+
+        <!--Login-->
+
+        <form action="/login" method="POST">
+            <div class="mb-4">
+                <label for="email" class="form-label" style="color: white;">Correo electrónico:</label>
+                <input type="email" id="email" class="form-control" name="email">
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label" style="color: white;">Contraseña:</label>
+                <input type="password" id="password" class="form-control" name="password">
+            </div>
+            <div class="mb-4 form-check">
+                <input type="checkbox" name="connected" class="form-check-input" id="connected">
+                <label for="connected" class="form-check-label" style="color: white;">Mantenerme conectado</label>
+            </div>
+
+            <div>
+                <button type="submit" id="login" name="sign-up" class="btn btn-primary" style="color: white; background-color: black; "> INICIAR SESIÓN </button>
+            </div>
+
+            <div class="my-3">
+                <!--<span><a href="#">Recuperar contrasena</a></span><br-->
+
+                <span style="color: white;">¿No tienes cuenta? Crea una dando <a href="/registro" style="color: white;">click aqui.</a></span> <br><br>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" style="color: white; background-color: black;">PROBAR DETECTOR SIN TENER CUENTA</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+      
+       
+
+{% endblock %}
